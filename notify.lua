@@ -9,6 +9,8 @@ return function()
     -- ScreenGui (create once, reuse if exists)
     local screenGui = PlayerGui:FindFirstChild("NullwareNotifyGui") or Instance.new("ScreenGui")
     screenGui.Name = "NullwareNotifyGui"
+    screenGui.ResetOnSpawn = false
+    screenGui.IgnoreGuiInset = true
     screenGui.Parent = PlayerGui
 
     -- Track active notifications
@@ -18,9 +20,11 @@ return function()
     local function UpdateNotificationPositions()
         for i, notif in ipairs(activeNotifs) do
             local targetPos = UDim2.new(1, -20, 1, -(20 + (i - 1) * spacing))
-            TweenService:Create(notif, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                Position = targetPos
-            }):Play()
+            TweenService:Create(
+                notif,
+                TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+                {Position = targetPos}
+            ):Play()
         end
     end
 
@@ -32,13 +36,13 @@ return function()
         local notifyFrame = Instance.new("Frame")
         notifyFrame.AnchorPoint = Vector2.new(1, 1)
         notifyFrame.Size = UDim2.new(0, 250, 0, 80)
-        notifyFrame.Position = UDim2.new(1, -20, 1, 100) -- Start below screen
+        notifyFrame.Position = UDim2.new(1, -20, 1, 120) -- start slightly offscreen
         notifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         notifyFrame.BorderSizePixel = 0
         notifyFrame.BackgroundTransparency = 0.2
         notifyFrame.Parent = screenGui
 
-        table.insert(activeNotifs, 1, notifyFrame) -- add to top of stack
+        table.insert(activeNotifs, 1, notifyFrame) -- add to stack
         UpdateNotificationPositions()
 
         -- Title
@@ -73,19 +77,25 @@ return function()
         progress.BorderSizePixel = 0
         progress.Parent = notifyFrame
 
-        -- Animate progress bar
+        -- Animate progress bar shrinking left → right
         TweenService:Create(progress, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
             Size = UDim2.new(0, 0, 0, 3)
         }):Play()
 
         -- Wait and fade out
         task.delay(duration, function()
-            local fadeOut = TweenService:Create(notifyFrame, TweenInfo.new(0.5), {BackgroundTransparency = 1})
+            local fadeOut = TweenService:Create(
+                notifyFrame,
+                TweenInfo.new(0.5),
+                {BackgroundTransparency = 1}
+            )
             fadeOut:Play()
             fadeOut.Completed:Wait()
-            notifyFrame:Destroy()
 
-            -- remove from stack & update positions
+            if notifyFrame and notifyFrame.Parent then
+                notifyFrame:Destroy()
+            end
+
             for i, notif in ipairs(activeNotifs) do
                 if notif == notifyFrame then
                     table.remove(activeNotifs, i)
