@@ -32,20 +32,22 @@ local function CreateNotification(title, content, duration)
     duration = duration or 5
 
     -- Frame
-    local notifyFrame = Instance.new("Frame")
-    notifyFrame.AnchorPoint = Vector2.new(1, 1)
-    notifyFrame.Size = UDim2.new(0, 250, 0, 80)
-    notifyFrame.Position = UDim2.new(1, -20, 1, 120)
-    notifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    notifyFrame.BackgroundTransparency = 0.2
-    notifyFrame.BorderSizePixel = 0
-    notifyFrame.Parent = screenGui
+    -- Frame
+local notifyFrame = Instance.new("Frame")
+notifyFrame.AnchorPoint = Vector2.new(1, 1)
+notifyFrame.Size = UDim2.new(0, 250, 0, 80)
+notifyFrame.Position = UDim2.new(1, -20, 1, 120)
+notifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+notifyFrame.BackgroundTransparency = 0.2
+notifyFrame.BorderSizePixel = 0
+notifyFrame.ClipsDescendants = true -- ✅ makes rounded corners actually clip children
+notifyFrame.Parent = screenGui
 
-    -- 🔹 Round corners
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = notifyFrame
-
+-- 🔹 Round the frame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12) -- adjust value for more/less roundness
+corner.Parent = notifyFrame
+    
     table.insert(activeNotifs, 1, notifyFrame)
     UpdateNotificationPositions()
 
