@@ -35,11 +35,16 @@ local function CreateNotification(title, content, duration)
     local notifyFrame = Instance.new("Frame")
     notifyFrame.AnchorPoint = Vector2.new(1, 1)
     notifyFrame.Size = UDim2.new(0, 250, 0, 80)
-    notifyFrame.Position = UDim2.new(1, -20, 1, 120) -- starts slightly off-screen at bottom right
+    notifyFrame.Position = UDim2.new(1, -20, 1, 120)
     notifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     notifyFrame.BackgroundTransparency = 0.2
     notifyFrame.BorderSizePixel = 0
     notifyFrame.Parent = screenGui
+
+    -- 🔹 Round corners
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = notifyFrame
 
     table.insert(activeNotifs, 1, notifyFrame)
     UpdateNotificationPositions()
@@ -51,7 +56,7 @@ local function CreateNotification(title, content, duration)
     titleLabel.BackgroundTransparency = 1
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.Text = title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 50, 50) -- red title
+    titleLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
     titleLabel.TextSize = 16
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = notifyFrame
@@ -75,6 +80,11 @@ local function CreateNotification(title, content, duration)
     progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     progress.BorderSizePixel = 0
     progress.Parent = notifyFrame
+
+    -- 🔹 Round progress bar
+    local progressCorner = Instance.new("UICorner")
+    progressCorner.CornerRadius = UDim.new(1, 0)
+    progressCorner.Parent = progress
 
     -- Animate shrinking progress bar
     TweenService:Create(progress, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
