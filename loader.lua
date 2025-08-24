@@ -8,8 +8,6 @@ if not url or url == "" then
     error("[Loader] No script URL configured.")
 end
 
-print(("[Loader] PlaceId: %s | Using: %s"):format(placeId, url))
-
 local ok, err = pcall(function()
     loadstring(game:HttpGet(url))()
 end)
